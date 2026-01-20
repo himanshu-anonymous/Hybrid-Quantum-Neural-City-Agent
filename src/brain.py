@@ -12,7 +12,7 @@ class NeuralGuide:
 
     def decide_score(self, features):
         inputs = np.array(features, ndmin=2)
-        # Ensure variable names match __init__ exactly
+       
         h_out = self._sigmoid(np.dot(inputs, self.W1))
         output = np.dot(h_out, self.W2)
         return float(output[0, 0]), h_out, inputs
