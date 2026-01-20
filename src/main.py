@@ -19,7 +19,7 @@ def train():
     viz = CityVisualizer(world)
     memory = deque(maxlen=2000)
     
-    # Epsilon decay of 0.99 is slower, giving the agent more time to explore paths
+ 
     episodes, epsilon, gamma = 200, 1.0, 0.95
     decay = 0.99 
 
@@ -48,13 +48,13 @@ def train():
             else:
                 next_node = max(scores, key=lambda k: scores[k][0])
             
-            # HIGHER STAKES: 20 for goal, -20 for danger to force faster learning
+         
             if world.is_end(next_node):
                 reward = 20.0
             elif next_node in world.danger_zones:
                 reward = -20.0
             else:
-                reward = -0.5 # Small step penalty to encourage speed
+                reward = -0.5 
                 
             total_reward += reward
             memory.append((scores[next_node][1], reward, next_node, world.is_end(next_node)))
@@ -63,10 +63,10 @@ def train():
             path.append(curr)
             if world.is_end(curr): break
 
-        # Update the dual-pane Performance Dashboard
+     
         viz.update(path, ep + 1, total_reward)
 
-        # Experience Replay (Learning Phase)
+   
         if len(memory) > 64:
             batch = [memory[i] for i in np.random.choice(len(memory), 64)]
             for feat, r, nxt, done in batch:
@@ -80,7 +80,7 @@ def train():
 
     # Final Save
     IntelligenceManager.save_intelligence(guide)
-    print("✅ Training Complete. Intelligence stored.")
+    print(" Training Complete. Intelligence stored.")
     plt.ioff()
     plt.show()
 
