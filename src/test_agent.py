@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 def run_test_deployment():
     """Runs the agent in 100% exploitation mode using saved intelligence."""
-    print("🧠 Loading Trained Intelligence for Deployment...")
+    print("Loading Trained Intelligence for Deployment...")
     
     world = NetworkTopology()
     explorer = QuantumExplorer()
@@ -17,11 +17,11 @@ def run_test_deployment():
     
     # Load the intelligence saved by main.py
     if not IntelligenceManager.load_intelligence(guide):
-        print("❌ Error: No trained weights found. Please run main.py first.")
+        print("Error: No trained weights found. Please run main.py first.")
         return
 
     viz = CityVisualizer(world)
-    test_runs = 5 # Number of unique scenarios to demonstrate
+    test_runs = 5 
 
     for run in range(test_runs):
         world.update_traffic() # Generate a new dynamic traffic scenario
@@ -29,12 +29,12 @@ def run_test_deployment():
         path = [curr]
         total_reward = 0
         
-        print(f"\n▶️ Running Deployment Scenario {run + 1}...")
+        print(f"\n Running Deployment Scenario {run + 1}...")
         print(f"🚥 Active Traffic (Danger Zones): {world.danger_zones}")
 
         for step in range(20):
             neighbors = world.get_valid_moves(curr)
-            # Use Quantum Explorer for 'intuition' with reduced shots for speed
+            
             q_probs = explorer.find_promising_paths(curr, neighbors, world.end_node, world)
             
             # Neural Evaluation
@@ -42,11 +42,11 @@ def run_test_deployment():
             for n in neighbors:
                 is_danger = 1.0 if n in world.danger_zones else 0.0
                 feat = [q_probs.get(n, 0), 0.5, is_danger]
-                # We only need the score for decision making (Exploitation)
+              
                 score, _, _ = guide.decide_score(feat)
                 scores[n] = score
 
-            # 100% EXPLOITATION: No randomness, just the best choice
+     
             next_node = max(scores, key=scores.get)
             
             curr = next_node
@@ -62,7 +62,7 @@ def run_test_deployment():
             total_reward += reward
             
             if world.is_end(curr):
-                print(f"✅ Goal reached in {step + 1} steps! Total Score: {total_reward:.1f}")
+                print(f" Goal reached in {step + 1} steps! Total Score: {total_reward:.1f}")
                 break
         
         # Update visualization
