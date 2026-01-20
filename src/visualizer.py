@@ -6,20 +6,17 @@ class CityVisualizer:
         self.topology = topology
         self.pos = nx.spring_layout(topology.G, seed=42)
         plt.ion()
-        # Create a figure with two subplots: (1 row, 2 columns)
         self.fig, (self.ax_map, self.ax_graph) = plt.subplots(1, 2, figsize=(15, 6))
         self.reward_history = []
 
     def update(self, path, episode, reward):
         self.reward_history.append(reward)
-        
-        # --- Draw the City Map (Left Side) ---
         self.ax_map.clear()
         nx.draw_networkx_nodes(self.topology.G, self.pos, node_color='lightgray', node_size=600, ax=self.ax_map)
         nx.draw_networkx_labels(self.topology.G, self.pos, font_size=8, ax=self.ax_map)
         nx.draw_networkx_edges(self.topology.G, self.pos, edge_color='gray', style='dotted', ax=self.ax_map)
         
-        # Highlight markers
+    
         nx.draw_networkx_nodes(self.topology.G, self.pos, nodelist=[self.topology.start_node], node_color='green', ax=self.ax_map)
         nx.draw_networkx_nodes(self.topology.G, self.pos, nodelist=[self.topology.end_node], node_color='gold', ax=self.ax_map)
         nx.draw_networkx_nodes(self.topology.G, self.pos, nodelist=self.topology.danger_zones, node_color='red', ax=self.ax_map)
@@ -29,8 +26,6 @@ class CityVisualizer:
             nx.draw_networkx_edges(self.topology.G, self.pos, edgelist=path_edges, edge_color='blue', width=3, ax=self.ax_map)
         
         self.ax_map.set_title(f"Episode {episode}: Pathfinding")
-
-        # --- Draw the Performance Dashboard (Right Side) ---
         self.ax_graph.clear()
         self.ax_graph.plot(self.reward_history, color='blue', linewidth=1)
         self.ax_graph.set_title("Learning Progress (Total Reward per Episode)")
